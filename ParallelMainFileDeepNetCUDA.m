@@ -13,15 +13,15 @@
 message_imagery = ['Please choose beetwen HiRISE and CTX images?'];
 choice_imagery = questdlg(message_imagery, 'SkyNet Interface', 'HiRISE', 'CTX', 'CTX');
 if strcmp(choice_imagery, 'HiRISE')
-    main_path = 'C:\Users\leon\Documents\Data\HiRISEDATA\';
+    main_path = 'C:\Users\leon\Documents\Data\CraterDATA\';
 else
-    main_path = 'C:\Users\leon\Documents\Data\CTXDATA\';
+    main_path = 'C:\Users\leon\Documents\Data\CraterDATA\';
 end
 config.labels = {'Data Folder', 'File to use', 'Features to classify', 'Positive Examples', 'Negative Examples', 'Hidden Neurons', 'Minimum image size'};
 config.data{1} = main_path;
 %config.data{1} = 'D:\matlab_dune_workshop\HiRISE_DATA\';
 config.data{2} = 'PSP_002292_1875_RED.QLOOK.JP2';
-config.data{3} = 'cones, crater';
+config.data{3} = 'cones, crater'; %classes to work with
 config.data{4} = 80;%positive examples (craters, cones, etc)
 config.data{5} = 80; %negative examples
 config.data{6} = 5; %hidden neurons
@@ -56,3 +56,6 @@ while strcmp(choice, 'Yes')
     
 
 end
+%%
+pixel_idx = 6;
+generate_image_database(config, config.data{7}(pixel_idx), 1);
