@@ -64,16 +64,17 @@ end
 resize_factor = 1;
 batch_size = 50;
 [im_to_classify, im_path] = get_image_to_classify(config, resize_factor);
-[cnn_cell, map_cell, trained_flag] = get_cnn(config);%check if there is a file
+%TODO A Function that reads a trained SVM
+[svm_cell, map_cell, trained_flag] = get_svm(config);%check if there is a file
 tic
-parfor pixel_idx = 1:6
+for pixel_idx = 1:6
         generate_image_database(config, config.data{7}(pixel_idx), 1);%BUG
         if trained_flag == 0; %if the cnn is not trained
-                [net, info] = cnn_hirise_Data(config, config.data{7}(pixel_idx), batch_size);
+                [net, info] = svm_hirise_Data(config, config.data{7}(pixel_idx));
                 net.layers{end} = struct('type', 'softmax') ;
-                cnn_cell{pixel_idx} = net;
+                svm_cell{pixel_idx} = net;
         end
-        [classified_map, prob_plot] = run_classification_cuda_running(config, cnn_cell{pixel_idx}, config.data{7}(pixel_idx), resize_factor, batch_size, im_to_classify, im_path);
+        [classified_map, prob_plot] = run_classification_cuda_running(config, svm_cell{pixel_idx}, config.data{7}(pixel_idx), resize_factor, batch_size, im_to_classify, im_path);
         map_cell{pixel_idx} = classified_map;
         disp_msg =  ['Im done with pixel size ', num2str(config.data{7}(pixel_idx))];
         disp(disp_msg);
@@ -103,5 +104,5 @@ create_interactive_map(output_map, im_to_classify)
 %%
 %%Evaluations
 for pixel_idx = 1:6
-    run_evaluations(config, cnn_cell{pixel_idx}, config.data{7}(pixel_idx));
+    run_evaluations(config, svm_cell{pixel_idx}, config.data{7}(pixel_idx));
 end

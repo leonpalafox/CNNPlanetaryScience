@@ -8,25 +8,13 @@ strfilename = strfilename{1};
 choice = questdlg('Would you like to create a new subfigure', 'SkyNet Interface', 'Yes', 'No', 'No');
 switch choice
     case 'Yes'
-        [img_file, path] = uigetfile(fullfile(config.data{1}, '*.JP2;*.png'));
+        [img_file, path] = uigetfile(fullfile(config.data{1}, '*'));
     case 'No'
         return
         
 end
 filename = fullfile(path, img_file);
-if strcmp(config.data{10},'CTX')
-    red_level = 0;
-else
-    red_level = 2;
-end
-red_level
-choice_image = questdlg('Is the source PNG or JP2', 'SkyNet Interface', 'PNG', 'JP2', 'JP2');
-switch choice_image
-    case 'PNG'
-        img = imread(filename);
-    case 'JP2'
-        img = imread(filename, 'ReductionLevel', red_level);
-end
+img = imread(filename, 'ReductionLevel', 0);
 %Next we choose the points that will serve as our upper left corner and
 %lower right corner in the cropped image (i.e. that part of the image with
 %rootless cones)
@@ -71,6 +59,5 @@ fprintf(fileID,formatSpec,A1);
 fprintf(fileID,formatSpec2,A2);
 fclose(fileID);
 imwrite(cropped_image,filename)
-image_zscore(filename, config.data{7}, config.data{9}, 1)%calculate mean and std for different window sizes and given step
 end
 
