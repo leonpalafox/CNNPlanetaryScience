@@ -20,11 +20,13 @@ tic
 z = searchmin;
 toc
 svm=fitcsvm(flatTrainData,trainLabels, 'KernelFunction','RBF', 'BoxConstraint', exp(z(1)), 'KernelScale', exp(z(2)));
-mdlSVM = fitPosterior(svm);
-[~,score_svm] = resubPredict(mdlSVM);
-class_flag = logical(mdlSVM.ClassNames-1);
-[Xsvm,Ysvm,Tsvm,AUCsvm] = perfcurve(logical(trainLabels-1),score_svm(:,class_flag),'true');
-plot(Xsvm, Ysvm)
+svm = fitcsvm(flatTrainData,trainLabels, 'KernelFunction','RBF', 'KernelScale', 'auto');
+% mdlSVM = fitPosterior(svm);
+% [~,score_svm] = resubPredict(mdlSVM);
+% class_flag = logical(mdlSVM.ClassNames-1);
+% [Xsvm,Ysvm,Tsvm,AUCsvm] = perfcurve(logical(trainLabels-1),score_svm(:,class_flag),'true');
+% plot(Xsvm, Ysvm)
+
 disp 'tortilla'
 
 

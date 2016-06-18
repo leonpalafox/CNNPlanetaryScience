@@ -10,4 +10,5 @@ if custom_map_flag == 1
 else
     colorma = jet(256);
 end
+disp(['Saving in ', fullfile(path,[image_name, '.png'])])
 imwrite(256*timg, colorma, fullfile(path,[image_name, '.png']))

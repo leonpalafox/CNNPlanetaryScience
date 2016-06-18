@@ -67,20 +67,20 @@ batch_size = 50;
 %TODO A Function that reads a trained SVM
 [svm_cell, map_cell, trained_flag] = get_svm(config);%check if there is a file
 tic
+break
 for pixel_idx = 1:6
         generate_image_database(config, config.data{7}(pixel_idx), 1);%BUG
         if trained_flag == 0; %if the cnn is not trained
-                [net, info] = svm_hirise_Data(config, config.data{7}(pixel_idx));
-                net.layers{end} = struct('type', 'softmax') ;
-                svm_cell{pixel_idx} = net;
+                svm_model = svm_hirise_Data(config, config.data{7}(pixel_idx));
+                svm_cell{pixel_idx} = svm_model;
         end
-        [classified_map, prob_plot] = run_classification_cuda_running(config, svm_cell{pixel_idx}, config.data{7}(pixel_idx), resize_factor, batch_size, im_to_classify, im_path);
+        [classified_map, prob_plot] = run_classification_svm_running(config, svm_cell{pixel_idx}, config.data{7}(pixel_idx), resize_factor, batch_size, im_to_classify, im_path);
         map_cell{pixel_idx} = classified_map;
         disp_msg =  ['Im done with pixel size ', num2str(config.data{7}(pixel_idx))];
         disp(disp_msg);
 end
 if trained_flag == 0 
-    save(fullfile(config.data{1},'cnn_session.mat'), 'cnn_cell', 'config', 'map_cell') %here we save the tranied network
+    save(fullfile(config.data{1},'svm_session.mat'), 'svm_cell', 'config', 'map_cell') %here we save the tranied network
 end
 toc
 close all

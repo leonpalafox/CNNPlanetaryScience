@@ -66,7 +66,7 @@ batch_size = 50;
 [im_to_classify, im_path] = get_image_to_classify(config, resize_factor);
 [cnn_cell, map_cell, trained_flag] = get_cnn(config);%check if there is a file
 tic
-parfor pixel_idx = 1:6
+parfor pixel_idx = 1:5
         generate_image_database(config, config.data{7}(pixel_idx), 1);%BUG
         if trained_flag == 0; %if the cnn is not trained
                 [net, info] = cnn_hirise_Data(config, config.data{7}(pixel_idx), batch_size);
@@ -79,7 +79,7 @@ parfor pixel_idx = 1:6
         disp(disp_msg);
 end
 if trained_flag == 0 
-    save(fullfile(config.data{1},'cnn_session.mat'), 'cnn_cell', 'config', 'map_cell') %here we save the tranied network
+    save(fullfile(config.data{1},'cnn_session_hirise.mat'), 'cnn_cell', 'config', 'map_cell') %here we save the tranied network
 end
 toc
 close all
@@ -87,7 +87,7 @@ close all
 %%
 smooth_flag = 1;
 [im_path_full, im_name_full, exte] = fileparts(im_path);
-output_map = consolidate_maps(map_cell, 1, smooth_flag);
+output_map = consolidate_maps(map_cell, 1:4, smooth_flag);
 geo_map = greate_geologic_map(output_map);%This is a color map, where each color defines a feature.
 %plot_image_tiff(output_map(:,:,1), ['class_', im_name_full], config)
 plot_image_png(output_map(:,:,1), ['coneclass_', im_name_full], config, 0)
@@ -95,13 +95,14 @@ plot_image_png(output_map(:,:,1)<0.5, ['conemap_', im_name_full], config, 1)
 plot_image_png(output_map(:,:,3), ['craterclass_', im_name_full], config, 0)
 plot_image_png(geo_map, ['geo_map_', im_name_full], config, 0)
 clearvars -global drawing_map
-create_interactive_map(output_map, im_to_classify)
+plot_contour(im_to_classify, output_map(:,:,1))
+%create_interactive_map(output_map, im_to_classify)
 %plot_learning_rates(learning_plot_cell, config);
 %plot_image(config, output_map, resize_factor);
 %save('cnn_session.mat', 'cnn_cell', 'learning_plot_cell', 'config', 'map_cell', 'resize_factor')
 %test_new_image(cnn_cell, config)
 %%
 %%Evaluations
-for pixel_idx = 1:6
+for pixel_idx = 1:5
     run_evaluations(config, cnn_cell{pixel_idx}, config.data{7}(pixel_idx));
 end

@@ -3,6 +3,7 @@ function plot_image_tiff(map_image, image_name, config)
 %images are
 path = config.data{1};
 timg = map_image;
+fullfile(path, [image_name, '.tiff'])
 t = Tiff(fullfile(path, [image_name, '.tiff']), 'w'); 
 tagstruct.ImageLength = size(timg, 1); 
 tagstruct.ImageWidth = size(timg, 2); 
